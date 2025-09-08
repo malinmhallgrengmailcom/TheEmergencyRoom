@@ -4,6 +4,9 @@
     {
         static void Main(string[] args)
         {
+            /*setup of global variables that 
+            are used throughout the program*/
+
             bool validAgeInput = false;
             bool validTemperatureInput = false;
             int age = 0;
@@ -15,11 +18,14 @@
             int painLevel = 0;
             bool validPainLevelInput = false;
 
+            string priority = "TBD";
+
             Console.WriteLine("Välkommen till akuten, vänligen skriv in patientens namn:");
             string? name = Console.ReadLine();
 
             Console.WriteLine($"Okej {name}, ta det bara lugnt, vi ska hjälpa dig! Hur gammal är du?");
 
+            //Makes sure we get a valid input for age
             while (!validAgeInput)
             {
                 validAgeInput = int.TryParse(Console.ReadLine(), out age);
@@ -33,6 +39,8 @@
 
             Console.WriteLine($"Bra, har du en febertemperatur som du kan ge oss?");
 
+            //Makes sure we get a valid input for temperature, using double
+            //in case we get decimal numbers
             while (!validTemperatureInput)
             {
                 validTemperatureInput = double.TryParse(Console.ReadLine(), out temperature);
@@ -44,9 +52,11 @@
                 }
             }
 
+            //display given information
             Console.WriteLine($"Okej, vad bra, då har vi dina grundläggande uppgifter. Du heter {name}, {age} år gammal, och din nuvarande temperatur är {temperature}");
-            Console.WriteLine("Nu ska vi ta lite snabb hälsostatus på dig bara för triagen.");
+            Console.WriteLine("\nNu ska vi ta lite snabb hälsostatus på dig bara för triagen.");
 
+            //each block takes response, makes it lower case and changes bool only if needed
             Console.WriteLine("Har du svårt att andas? ja/nej");
             string? breathingResponse = Console.ReadLine().ToLower();
 
@@ -84,8 +94,24 @@
                 }
             }
 
-            Console.WriteLine($"Okej {name} vi har fått följande info:\nandiningsbesvär: {isShortOfBreath} \nbröstsmärtor: {hasChestPains} \nblödning: {hasBigBleeding}\nUpplevd smärta: {painLevel}");
-            
+            //Debug log below, ignore
+            //Console.WriteLine($"Okej {name} vi har fått följande info:\nandiningsbesvär: {isShortOfBreath} \nbröstsmärtor: {hasChestPains} \nblödning: {hasBigBleeding}\nUpplevd smärta: {painLevel}");
+
+            if ((isShortOfBreath || hasChestPains) || hasBigBleeding || (temperature > 40 && (age < 1 || age > 75)))
+            {
+                priority = "RÖD";
+                Console.WriteLine($"{name}, du har en del alarmsymptom så vi kommer ge dig prio {priority}");
+            }
+            else if (temperature >= 38 || painLevel >= 7)
+            {
+                priority = "GUL";
+                Console.WriteLine($"Så, {name}, dina symptom är oroande, men inte livshotande. Du kommer få prio {priority}");
+            }
+            else
+            {
+                priority = "GRÖN";
+                Console.WriteLine($"Just nu är dina symptom inte så alarmerande, {name}, men vi kommer fortsatt hålla koll på dig. Du får prio {priority}");
+            }
         }
     }
 }
